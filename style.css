@@ -1,0 +1,4014 @@
+/* ========================================================
+   GLOBAL DESIGN TOKENS & SYSTEM VARIABLES
+   ======================================================== */
+:root {
+  /* Required Color Palette */
+  --bg-cream: #FDFBF7;
+  --blush-pink: #F4ACB7;
+  --blush-pink-light: #FBE4E8;
+  --blush-pink-dark: #D98996;
+  --kraft-brown: #D8C3A5;
+  --kraft-brown-dark: #B59B78;
+  --charcoal-ink: #3A3532;
+  --charcoal-muted: #5E5854;
+  --fairy-gold: #FFD166;
+  --fairy-gold-light: #FFF0B3;
+  --fairy-gold-dark: #C69214;
+
+  /* Rich Material Textures */
+  --leather-base: #3A231C;
+  --leather-dark: #22120C;
+  --leather-highlight: #5A392F;
+  --parchment-cream: #FAF6ED;
+  --ribbon-satin-gradient: linear-gradient(
+    180deg,
+    #FBE4E8 0%,
+    #F4ACB7 28%,
+    #E893A0 70%,
+    #D07987 100%
+  );
+  --ribbon-v-satin-gradient: linear-gradient(
+    90deg,
+    #FBE4E8 0%,
+    #F4ACB7 28%,
+    #E893A0 70%,
+    #D07987 100%
+  );
+
+  /* Typography System */
+  --font-handwriting: 'Caveat', cursive;
+  --font-script: 'Dancing Script', cursive;
+  --font-serif-title: 'Playfair Display', Georgia, serif;
+  --font-serif-body: 'Lora', Georgia, serif;
+
+  /* Elevation & Shadows */
+  --shadow-soft: 0 8px 24px rgba(58, 53, 50, 0.08);
+  --shadow-medium: 0 12px 36px rgba(45, 30, 24, 0.22);
+  --shadow-deep: 0 24px 60px rgba(25, 12, 8, 0.55);
+  --gold-glow: 0 0 20px rgba(255, 209, 102, 0.45);
+}
+
+/* ========================================================
+   CSS RESET & FOUNDATION
+   ======================================================== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  overflow-x: hidden;
+  background-color: #EAE0D2;
+  color: var(--charcoal-ink);
+  font-family: var(--font-serif-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cozy Vintage Wooden Desk Background & Warm Edge Vignette */
+body {
+  background-color: #EAE0D2;
+  background-image: 
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.32) 0%, rgba(195, 178, 158, 0.38) 100%),
+    radial-gradient(#c5b59f 1px, transparent 1px);
+  background-size: 100% 100%, 24px 24px;
+  background-attachment: fixed;
+  position: relative;
+}
+
+/* Global Vignette Overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, transparent 65%, rgba(58, 53, 50, 0.12) 100%);
+  z-index: 100;
+}
+
+/* ========================================================
+   STEP 1: FULLSCREEN LOCKED SCRAPBOOK OVERLAY (#lock-screen)
+   ======================================================== */
+.lock-screen {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 1500px;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Dual Scrapbook Doors (Open like a luxury book cover) */
+.scrapbook-cover-left,
+.scrapbook-cover-right {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background-color: var(--leather-base);
+  background-image:
+    radial-gradient(circle at 30% 20%, rgba(90, 57, 47, 0.6) 0%, transparent 50%),
+    radial-gradient(circle at 70% 80%, rgba(34, 18, 12, 0.8) 0%, transparent 60%),
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.015) 0px, rgba(255, 255, 255, 0.015) 2px, transparent 2px, transparent 6px);
+  box-shadow: inset 0 0 100px rgba(15, 7, 4, 0.85);
+  transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+  will-change: transform;
+}
+
+.scrapbook-cover-left {
+  left: 0;
+  border-right: 1px solid rgba(0, 0, 0, 0.4);
+  transform-origin: left center;
+}
+
+.scrapbook-cover-right {
+  right: 0;
+  border-left: 1px solid rgba(0, 0, 0, 0.4);
+  transform-origin: right center;
+}
+
+/* Stitched Border on Scrapbook Cover Edge */
+.cover-stitch-border {
+  position: absolute;
+  inset: 18px;
+  border: 2px dashed rgba(255, 209, 102, 0.35);
+  border-radius: 8px;
+  pointer-events: none;
+  box-shadow: 
+    0 0 0 4px rgba(34, 18, 12, 0.6),
+    inset 0 0 20px rgba(0, 0, 0, 0.5);
+  z-index: 2;
+  transition: opacity 0.8s ease;
+}
+
+.cover-vintage-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 35%, rgba(15, 7, 4, 0.7) 95%);
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* Antique Brass Corner Brackets */
+.corner-bracket {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--fairy-gold);
+  opacity: 0.75;
+  pointer-events: none;
+  z-index: 4;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+  transition: transform 1s ease, opacity 0.8s ease;
+}
+
+.corner-bracket.top-left {
+  top: 28px;
+  left: 28px;
+  border-right: none;
+  border-bottom: none;
+  border-top-left-radius: 8px;
+}
+
+.corner-bracket.top-right {
+  top: 28px;
+  right: 28px;
+  border-left: none;
+  border-bottom: none;
+  border-top-right-radius: 8px;
+}
+
+.corner-bracket.bottom-left {
+  bottom: 28px;
+  left: 28px;
+  border-right: none;
+  border-top: none;
+  border-bottom-left-radius: 8px;
+}
+
+.corner-bracket.bottom-right {
+  bottom: 28px;
+  right: 28px;
+  border-left: none;
+  border-top: none;
+  border-bottom-right-radius: 8px;
+}
+
+/* ========================================================
+   BLUSH PINK SATIN RIBBONS
+   ======================================================== */
+/* Horizontal Satin Ribbon */
+.ribbon-horizontal {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 54px;
+  margin-top: -27px;
+  background: var(--ribbon-satin-gradient);
+  box-shadow: 
+    0 6px 20px rgba(18, 9, 6, 0.45),
+    inset 0 3px 5px rgba(255, 255, 255, 0.6),
+    inset 0 -3px 5px rgba(110, 40, 52, 0.35);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 1.1s cubic-bezier(0.7, 0, 0.3, 1),
+              opacity 0.9s ease;
+  will-change: transform, opacity;
+}
+
+/* Vertical Satin Ribbon */
+.ribbon-vertical {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 54px;
+  margin-left: -27px;
+  background: var(--ribbon-v-satin-gradient);
+  box-shadow: 
+    0 0 25px rgba(18, 9, 6, 0.45),
+    inset 3px 0 5px rgba(255, 255, 255, 0.6),
+    inset -3px 0 5px rgba(110, 40, 52, 0.35);
+  z-index: 10;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  transition: transform 1.1s cubic-bezier(0.7, 0, 0.3, 1),
+              opacity 0.9s ease;
+  will-change: transform, opacity;
+}
+
+/* Ribbon Stitches */
+.ribbon-stitch {
+  opacity: 0.55;
+}
+.ribbon-stitch.top,
+.ribbon-stitch.bottom {
+  height: 2px;
+  width: 100%;
+  border-top: 1.5px dashed #FBE4E8;
+}
+.ribbon-stitch.left,
+.ribbon-stitch.right {
+  width: 2px;
+  height: 100%;
+  border-left: 1.5px dashed #FBE4E8;
+}
+
+/* Satin Silky Sheen Highlight */
+.ribbon-shine {
+  width: 100%;
+  height: 10px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  pointer-events: none;
+}
+.ribbon-shine.vertical {
+  width: 10px;
+  height: 100%;
+  background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+}
+
+/* ========================================================
+   CENTERPIECE & VINTAGE PADLOCK CARD
+   ======================================================== */
+.lock-centerpiece {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 460px;
+  padding: 16px;
+  transition: transform 1s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.8s ease;
+}
+
+/* Ribbon Rosette / Bow Backdrop */
+.ribbon-bow-backdrop {
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(244, 172, 183, 0.55) 0%, rgba(244, 172, 183, 0) 70%);
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(12px);
+  animation: bowPulse 4s ease-in-out infinite alternate;
+}
+
+@keyframes bowPulse {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  100% { transform: scale(1.15); opacity: 0.95; }
+}
+
+/* Main Antique Parchment Lock Card */
+.lock-card {
+  position: relative;
+  width: 100%;
+  background-color: var(--parchment-cream);
+  background-image: 
+    radial-gradient(#d3c6b5 1px, transparent 1px),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(244, 237, 224, 0.9) 100%);
+  background-size: 20px 20px, 100% 100%;
+  border-radius: 20px;
+  padding: 28px 24px 22px;
+  border: 2px solid var(--kraft-brown-dark);
+  box-shadow: 
+    0 15px 45px rgba(18, 9, 6, 0.65),
+    0 0 0 5px rgba(255, 209, 102, 0.25),
+    inset 0 0 35px rgba(216, 195, 165, 0.4);
+  text-align: center;
+  transform: translateZ(0);
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Embossed Gold Header */
+.lock-header {
+  margin-bottom: 12px;
+}
+
+.sparkle-badge {
+  display: inline-block;
+  font-family: var(--font-handwriting);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #8C5C15;
+  background: rgba(255, 209, 102, 0.25);
+  border: 1px solid rgba(255, 209, 102, 0.6);
+  padding: 3px 14px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
+}
+
+.embossed-title {
+  font-family: var(--font-serif-title);
+  font-size: 1.45rem;
+  font-weight: 800;
+  line-height: 1.3;
+  margin-bottom: 6px;
+  background: linear-gradient(135deg, #7A4E0B 0%, #D49B2A 35%, #8C5C15 80%, #5C3806 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8), 0 -1px 1px rgba(0, 0, 0, 0.2);
+  letter-spacing: 0.5px;
+}
+
+.lock-subtitle {
+  font-family: var(--font-script);
+  font-size: 1.05rem;
+  color: var(--charcoal-muted);
+  font-weight: 600;
+}
+
+/* ========================================================
+   ANIMATED VINTAGE PADLOCK ICON
+   ======================================================== */
+.padlock-container {
+  position: relative;
+  display: inline-block;
+  margin: 4px auto 14px;
+}
+
+.padlock-glow {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 209, 102, 0.4) 0%, transparent 70%);
+  filter: blur(8px);
+  pointer-events: none;
+  animation: padlockGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes padlockGlow {
+  0% { transform: scale(0.9); opacity: 0.5; }
+  100% { transform: scale(1.15); opacity: 0.9; }
+}
+
+.vintage-padlock {
+  display: block;
+  filter: drop-shadow(0 6px 12px rgba(45, 25, 15, 0.35));
+  transition: transform 0.4s ease;
+}
+
+/* Padlock Shackle Unlocking Animation */
+.padlock-shackle {
+  transform-origin: 30px 45px;
+  transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vintage-padlock.is-unlocked .padlock-shackle,
+#padlock-svg.is-unlocked .padlock-shackle {
+  transform: translateY(-16px) rotate(-32deg);
+}
+
+/* ========================================================
+   4-DIGIT PIN DISPLAY BOXES
+   ======================================================== */
+.pin-display-wrapper {
+  margin-bottom: 12px;
+}
+
+.pin-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+
+.pin-box {
+  width: 44px;
+  height: 52px;
+  background: #FFF;
+  border: 2px solid var(--kraft-brown);
+  border-radius: 12px;
+  box-shadow: 
+    inset 0 2px 5px rgba(0, 0, 0, 0.08),
+    0 3px 8px rgba(58, 53, 50, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.pin-box.is-active {
+  border-color: var(--blush-pink-dark);
+  box-shadow: 
+    0 0 0 3px rgba(244, 172, 183, 0.35),
+    inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.pin-box.is-error {
+  border-color: #D32F2F !important;
+  background-color: #FFEBEE !important;
+  box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.25) !important;
+}
+
+.pin-heart {
+  font-size: 1.4rem;
+  color: var(--blush-pink-dark);
+  opacity: 0;
+  transform: scale(0);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: inline-block;
+  line-height: 1;
+}
+
+.pin-box.filled .pin-heart {
+  opacity: 1;
+  transform: scale(1);
+  filter: drop-shadow(0 2px 4px rgba(217, 137, 150, 0.5));
+}
+
+/* ========================================================
+   REAL-TIME STATUS & ERROR MESSAGE
+   ======================================================== */
+.lock-message {
+  min-height: 24px;
+  font-family: var(--font-handwriting);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--charcoal-ink);
+  margin-bottom: 14px;
+  transition: all 0.25s ease;
+}
+
+.lock-message.error {
+  color: #C62828;
+  font-weight: 700;
+  animation: pulseError 0.4s ease;
+}
+
+.lock-message.success {
+  color: #2E7D32;
+  font-weight: 700;
+}
+
+@keyframes pulseError {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Red Shake Animation on Lock Card */
+.shake-animation {
+  animation: lockShake 0.65s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes lockShake {
+  10%, 90% { transform: translateX(-6px) rotate(-1deg); }
+  20%, 80% { transform: translateX(8px) rotate(1deg); }
+  30%, 50%, 70% { transform: translateX(-8px) rotate(-0.5deg); }
+  40%, 60% { transform: translateX(8px) rotate(0.5deg); }
+}
+
+/* ========================================================
+   INTERACTIVE NUMERIC KEYPAD
+   ======================================================== */
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  max-width: 290px;
+  margin: 0 auto 16px;
+}
+
+.key-btn {
+  font-family: var(--font-serif-title);
+  font-size: 1.28rem;
+  font-weight: 700;
+  color: var(--charcoal-ink);
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5EDE0 100%);
+  border: 1.5px solid var(--kraft-brown);
+  border-radius: 12px;
+  padding: 11px 0;
+  cursor: pointer;
+  box-shadow: 
+    0 4px 0 var(--kraft-brown-dark),
+    0 5px 10px rgba(58, 53, 50, 0.12);
+  transition: all 0.12s ease;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
+.key-btn:hover {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAECE3 100%);
+  border-color: var(--blush-pink-dark);
+  box-shadow: 
+    0 4px 0 var(--kraft-brown-dark),
+    0 0 12px rgba(244, 172, 183, 0.45);
+}
+
+.key-btn:active,
+.key-btn.is-pressed {
+  transform: translateY(3px);
+  box-shadow: 
+    0 1px 0 var(--kraft-brown-dark),
+    0 2px 5px rgba(58, 53, 50, 0.15);
+}
+
+.key-btn.key-utility {
+  font-family: var(--font-serif-body);
+  font-size: 1.1rem;
+  color: var(--charcoal-muted);
+  background: linear-gradient(180deg, #F9F4EB 0%, #EBDDC8 100%);
+}
+
+.key-btn:focus-visible {
+  border-color: var(--fairy-gold-dark);
+  box-shadow: 
+    0 4px 0 var(--kraft-brown-dark),
+    0 0 0 3px rgba(255, 209, 102, 0.6);
+}
+
+/* ========================================================
+   ROMANTIC PASSCODE HINT FOOTER
+   ======================================================== */
+.lock-hint-footer {
+  border-top: 1px dashed var(--kraft-brown);
+  padding-top: 12px;
+  margin-top: 6px;
+}
+
+.lock-hint {
+  font-family: var(--font-handwriting);
+  font-size: 1.22rem;
+  line-height: 1.35;
+  color: #63432B;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+/* ========================================================
+   UNLOCKED TRANSITIONS & SCRAPBOOK DOOR OPEN ANIMATIONS
+   ======================================================== */
+/* Untied Ribbons State */
+.lock-screen.is-unlocked .ribbon-horizontal {
+  transform: scaleX(0);
+  opacity: 0;
+}
+
+.lock-screen.is-unlocked .ribbon-vertical {
+  transform: scaleY(0);
+  opacity: 0;
+}
+
+.lock-screen.is-unlocked .lock-centerpiece {
+  transform: scale(1.08);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lock-screen.is-unlocked .scrapbook-cover-left {
+  transform: translateX(-102%) rotateY(-20deg);
+}
+
+.lock-screen.is-unlocked .scrapbook-cover-right {
+  transform: translateX(102%) rotateY(20deg);
+}
+
+.lock-screen.is-unlocked .cover-stitch-border,
+.lock-screen.is-unlocked .corner-bracket {
+  opacity: 0;
+}
+
+.lock-screen.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ========================================================
+   MAIN SCRAPBOOK CONTAINER (#scrapbook-main)
+   ======================================================== */
+.scrapbook-main {
+  position: relative;
+  width: 100%;
+  max-width: 1040px;
+  margin: 32px auto 60px;
+  min-height: 100vh;
+  padding: 40px 28px 80px;
+  background-color: var(--bg-cream);
+  background-image: 
+    radial-gradient(#d3c6b5 1.2px, transparent 1.2px),
+    radial-gradient(ellipse at center, rgba(253, 251, 247, 0) 55%, rgba(184, 159, 127, 0.12) 100%);
+  background-size: 26px 26px, 100% 100%;
+  border: 1px solid #D5C3AA;
+  border-radius: 12px;
+  box-shadow: 
+    0 20px 60px rgba(45, 30, 20, 0.18), 
+    6px 6px 0 #F4ECE1, 
+    12px 12px 0 #E6D9C6;
+  opacity: 1;
+  transform: none;
+  transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scrapbook-main.is-locked {
+  visibility: hidden;
+  opacity: 0;
+  transform: scale(0.96);
+  pointer-events: none;
+}
+
+/* ========================================================
+   STEP 2: TOP GLOWING FAIRY LIGHTS (#fairy-lights)
+   Curved dark wire with alternating warm-gold and soft-pink bulbs
+   ======================================================== */
+.fairy-lights-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: 65px;
+  margin-bottom: 8px;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.fairy-lights-svg {
+  width: 100%;
+  height: 65px;
+  display: block;
+  overflow: visible;
+}
+
+.fairy-wire {
+  filter: drop-shadow(0 2px 3px rgba(40, 25, 20, 0.2));
+}
+
+/* Individual Bulb Groups */
+.fairy-bulb-group {
+  transform-origin: 0 0;
+  transition: filter 0.3s ease;
+}
+
+.fairy-bulb-group.bulb-gold {
+  filter: drop-shadow(0 0 6px rgba(255, 209, 102, 0.85))
+          drop-shadow(0 0 14px rgba(255, 209, 102, 0.5));
+  animation: twinkleGold 2.8s ease-in-out infinite alternate;
+}
+
+.fairy-bulb-group.bulb-pink {
+  filter: drop-shadow(0 0 6px rgba(244, 172, 183, 0.85))
+          drop-shadow(0 0 14px rgba(244, 172, 183, 0.5));
+  animation: twinklePink 3.2s ease-in-out infinite alternate;
+}
+
+/* Alternating Staggered Delays for Organic Flicker */
+.fairy-bulb-group.bulb-1 { animation-delay: 0s; }
+.fairy-bulb-group.bulb-2 { animation-delay: 0.6s; }
+.fairy-bulb-group.bulb-3 { animation-delay: 1.2s; }
+.fairy-bulb-group.bulb-4 { animation-delay: 1.8s; }
+.fairy-bulb-group.bulb-5 { animation-delay: 0.4s; }
+.fairy-bulb-group.bulb-6 { animation-delay: 1.4s; }
+.fairy-bulb-group.bulb-7 { animation-delay: 2.2s; }
+.fairy-bulb-group.bulb-8 { animation-delay: 0.8s; }
+.fairy-bulb-group.bulb-9 { animation-delay: 1.6s; }
+.fairy-bulb-group.bulb-10 { animation-delay: 2.6s; }
+
+@keyframes twinkleGold {
+  0% {
+    opacity: 0.55;
+    filter: drop-shadow(0 0 3px rgba(255, 209, 102, 0.4))
+            drop-shadow(0 0 6px rgba(255, 209, 102, 0.2));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 9px rgba(255, 209, 102, 1))
+            drop-shadow(0 0 20px rgba(255, 209, 102, 0.8))
+            drop-shadow(0 0 28px rgba(255, 240, 179, 0.6));
+  }
+  100% {
+    opacity: 0.75;
+    filter: drop-shadow(0 0 5px rgba(255, 209, 102, 0.6))
+            drop-shadow(0 0 10px rgba(255, 209, 102, 0.35));
+  }
+}
+
+@keyframes twinklePink {
+  0% {
+    opacity: 0.5;
+    filter: drop-shadow(0 0 3px rgba(244, 172, 183, 0.4))
+            drop-shadow(0 0 6px rgba(244, 172, 183, 0.2));
+  }
+  50% {
+    opacity: 1;
+    filter: drop-shadow(0 0 9px rgba(244, 172, 183, 1))
+            drop-shadow(0 0 20px rgba(244, 172, 183, 0.8))
+            drop-shadow(0 0 28px rgba(251, 228, 232, 0.6));
+  }
+  100% {
+    opacity: 0.7;
+    filter: drop-shadow(0 0 5px rgba(244, 172, 183, 0.6))
+            drop-shadow(0 0 10px rgba(244, 172, 183, 0.35));
+  }
+}
+
+/* ========================================================
+   STEP 2: FLOATING VINYL MUSIC PLAYER (#vinyl-player)
+   Fixed bottom-right pastel-pink sleeve & spinning vinyl
+   ======================================================== */
+.vinyl-player {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  perspective: 1000px;
+  user-select: none;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.lock-screen:not(.is-hidden) ~ #vinyl-player {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.vinyl-player:hover {
+  transform: translateY(-4px) scale(1.02);
+}
+
+/* Floating Musical Notes & Hearts Container */
+.vinyl-notes-container {
+  position: absolute;
+  top: -20px;
+  left: 20px;
+  right: 20px;
+  height: 120px;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 920;
+}
+
+.floating-music-note {
+  position: absolute;
+  bottom: 0;
+  font-family: var(--font-handwriting);
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--fairy-gold);
+  text-shadow: 0 0 8px rgba(255, 209, 102, 0.75), 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: floatUpNote 2.4s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.floating-music-note.note-pink {
+  color: var(--blush-pink-dark);
+  text-shadow: 0 0 8px rgba(244, 172, 183, 0.8), 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes floatUpNote {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.6) rotate(0deg);
+  }
+  15% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--drift-x, 20px), -120px) scale(1.15) rotate(var(--rot, 25deg));
+  }
+}
+
+/* Vinyl Player Card Container */
+.vinyl-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Peeking Vinyl Disc Slot */
+.vinyl-disc-slot {
+  position: absolute;
+  left: -26px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 78px;
+  height: 78px;
+  z-index: 1;
+  pointer-events: none;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.vinyl-player.is-playing .vinyl-disc-slot {
+  transform: translateY(-50%) translateX(-14px);
+}
+
+/* The Realistic Vinyl Record */
+.vinyl-disc {
+  position: relative;
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #24201E 0%, #151312 70%, #0D0C0B 100%);
+  box-shadow: 
+    0 4px 12px rgba(15, 10, 8, 0.45),
+    inset 0 0 2px rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: spin 4s linear infinite;
+  animation-play-state: paused;
+  will-change: transform;
+}
+
+.vinyl-player.is-playing .vinyl-disc {
+  animation-play-state: running;
+}
+
+/* Vinyl Grooves */
+.vinyl-groove-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+.vinyl-groove-ring.ring-1 { width: 66px; height: 66px; }
+.vinyl-groove-ring.ring-2 { width: 52px; height: 52px; border-color: rgba(255, 255, 255, 0.08); }
+.vinyl-groove-ring.ring-3 { width: 38px; height: 38px; }
+
+/* Vinyl Center Label */
+.vinyl-center-label {
+  position: relative;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFF3C4 0%, #FFD166 60%, #C69214 100%);
+  border: 1.5px solid #9C6D1D;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.vinyl-heart-motif {
+  font-size: 11px;
+  color: #8C2A3E;
+  line-height: 1;
+}
+
+.vinyl-center-hole {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #0D0C0B;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Pastel Pink Record Sleeve */
+.vinyl-sleeve {
+  position: relative;
+  z-index: 2;
+  width: 175px;
+  background: linear-gradient(145deg, #FFF6F7 0%, #FBE4E8 50%, #F4ACB7 100%);
+  border: 2px solid var(--blush-pink-dark);
+  border-radius: 14px;
+  padding: 10px 12px 10px 14px;
+  box-shadow: 
+    0 10px 25px rgba(58, 53, 50, 0.18),
+    0 2px 6px rgba(0, 0, 0, 0.08),
+    inset 0 1px 2px rgba(255, 255, 255, 0.8);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sleeve-badge {
+  font-family: var(--font-handwriting);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #8C2A3E;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  line-height: 1;
+}
+
+/* Scrolling Marquee Ticker */
+.vinyl-ticker-wrap {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.65);
+  border-radius: 6px;
+  border: 1px solid rgba(217, 137, 150, 0.4);
+  padding: 4px 6px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.vinyl-ticker-track {
+  display: inline-flex;
+  gap: 12px;
+  animation: tickerScroll 9s linear infinite;
+  will-change: transform;
+}
+
+.vinyl-song-title {
+  font-family: var(--font-serif-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--charcoal-ink);
+}
+
+.vinyl-song-title-spacer {
+  color: var(--fairy-gold-dark);
+  font-size: 0.75rem;
+}
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* Play/Pause Button Controls */
+.vinyl-play-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 6px 10px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FAF0EE 100%);
+  border: 1.5px solid var(--blush-pink-dark);
+  border-radius: 20px;
+  cursor: pointer;
+  color: #8C2A3E;
+  font-family: var(--font-serif-title);
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 
+    0 2px 5px rgba(217, 137, 150, 0.25),
+    0 1px 0 var(--kraft-brown-dark);
+  transition: all 0.15s ease;
+  outline: none;
+}
+
+.vinyl-play-btn:hover {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F5DEE3 100%);
+  box-shadow: 
+    0 3px 8px rgba(217, 137, 150, 0.4),
+    0 0 10px rgba(255, 209, 102, 0.4);
+}
+
+.vinyl-play-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 2px rgba(217, 137, 150, 0.2);
+}
+
+.vinyl-btn-icon {
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.vinyl-btn-icon.pause-icon {
+  font-size: 0.72rem;
+  letter-spacing: -1px;
+}
+
+
+/* ========================================================
+   STEP 3: SCRAPBOOK DIARY HERO HEADER
+   Realistic handmade diary with corner washi tape, stamp, and ransom title
+   ======================================================== */
+.scrapbook-diary-hero {
+  position: relative;
+  background-color: #FFFFFF;
+  background-image: 
+    radial-gradient(#dfd4c5 1px, transparent 1px),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(253, 248, 240, 0.9) 100%);
+  background-size: 22px 22px, 100% 100%;
+  border-radius: 4px;
+  padding: 42px 34px 34px;
+  text-align: center;
+  box-shadow: 
+    0 1px 1px rgba(0,0,0,0.08), 
+    0 10px 0 -5px #FAF3E8, 
+    0 10px 1px -4px rgba(0,0,0,0.08), 
+    0 20px 0 -10px #F3E9D8, 
+    0 20px 1px -9px rgba(0,0,0,0.08), 
+    0 24px 40px rgba(58, 53, 50, 0.12);
+  border: 1.5px solid rgba(216, 195, 165, 0.6);
+  margin-bottom: 35px;
+  overflow: visible;
+}
+
+/* Semi-Transparent Washi Tape Strips on 4 Corners */
+.diary-tape {
+  position: absolute;
+  width: 95px;
+  height: 28px;
+  background: rgba(244, 172, 183, 0.7);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  border-left: 2px dashed rgba(255, 255, 255, 0.6);
+  border-right: 2px dashed rgba(255, 255, 255, 0.6);
+  z-index: 10;
+  pointer-events: none;
+}
+
+.tape-corner-tl {
+  top: -10px;
+  left: -15px;
+  transform: rotate(-38deg);
+  background: rgba(244, 172, 183, 0.75);
+}
+
+.tape-corner-tr {
+  top: -10px;
+  right: -15px;
+  transform: rotate(38deg);
+  background: rgba(216, 195, 165, 0.75);
+}
+
+.tape-corner-bl {
+  bottom: -10px;
+  left: -15px;
+  transform: rotate(38deg);
+  background: rgba(216, 195, 165, 0.75);
+}
+
+.tape-corner-br {
+  bottom: -10px;
+  right: -15px;
+  transform: rotate(-38deg);
+  background: rgba(244, 172, 183, 0.75);
+}
+
+/* Tilted Vintage Rubber-Ink Stamp Badge */
+.rubber-stamp-badge {
+  position: absolute;
+  top: 18px;
+  right: 24px;
+  width: 104px;
+  height: 104px;
+  border-radius: 50%;
+  border: 2.5px dashed #B33946;
+  outline: 1.5px solid #B33946;
+  outline-offset: 3px;
+  color: #B33946;
+  transform: rotate(-14deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  opacity: 0.88;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(179, 57, 70, 0.15));
+  z-index: 8;
+  mask-image: radial-gradient(circle, black 85%, rgba(0,0,0,0.6) 100%);
+}
+
+.stamp-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.15;
+  padding: 6px;
+}
+
+.stamp-stars {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+}
+
+.stamp-main-text {
+  font-family: var(--font-serif-title);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.8px;
+}
+
+.stamp-sub-text {
+  font-family: var(--font-handwriting);
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.1;
+  margin: 1px 0;
+}
+
+.stamp-date {
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+/* Handwritten Sub-Header */
+.diary-sub-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.sub-heart-icon {
+  color: var(--blush-pink-dark);
+  font-size: 1.2rem;
+}
+
+.sub-text-content {
+  font-family: var(--font-script);
+  font-size: 1.85rem;
+  color: var(--blush-pink-dark);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* Ransom-Note Cut-Out Title */
+.diary-ransom-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px 12px;
+  margin-bottom: 14px;
+}
+
+.cutout-word {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+}
+
+.cutout-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 40px;
+  padding: 2px 6px;
+  font-size: 1.55rem;
+  font-weight: 900;
+  line-height: 1;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  box-shadow: 
+    0 3px 6px rgba(58, 53, 50, 0.18),
+    0 1px 2px rgba(0, 0, 0, 0.08);
+  user-select: none;
+  transition: transform 0.2s ease;
+}
+
+.letter-h  { padding: 2px 8px; }
+.letter-a  { padding: 1px 5px; }
+.letter-p1 { padding: 3px 6px; }
+.letter-p2 { padding: 2px 7px; }
+.letter-y  { padding: 2px 6px; }
+.letter-b  { padding: 2px 8px; }
+.letter-i  { padding: 2px 6px; min-width: 22px; }
+.letter-r  { padding: 2px 7px; }
+.letter-t  { padding: 2px 6px; }
+.letter-h2 { padding: 1px 7px; }
+.letter-d  { padding: 2px 8px; }
+.letter-a2 { padding: 2px 6px; }
+.letter-y2 { padding: 2px 7px; }
+
+.cutout-letter:hover {
+  transform: scale(1.15) rotate(0deg) !important;
+  z-index: 5;
+}
+
+/* Eclectic Scissor-Cut Color Variations & Angles */
+.letter-h  { background: #3A3532; color: #FFF; font-family: var(--font-serif-title); transform: rotate(-4deg); }
+.letter-a  { background: #F4ACB7; color: #8C2A3E; font-family: var(--font-handwriting); font-size: 1.8rem; transform: rotate(3deg); }
+.letter-p1 { background: #FFD166; color: #5C3806; font-family: var(--font-serif-title); transform: rotate(-2deg); }
+.letter-p2 { background: #FFFFFF; color: #3A3532; border: 1px solid #D8C3A5; transform: rotate(4deg); }
+.letter-y  { background: #D8C3A5; color: #2B1E16; font-family: var(--font-serif-body); transform: rotate(-3deg); }
+
+.letter-b  { background: #FBE4E8; color: #B33946; font-family: var(--font-serif-title); transform: rotate(3deg); }
+.letter-i  { background: #3A3532; color: #FFD166; transform: rotate(-2deg); }
+.letter-r  { background: #FFD166; color: #3A3532; font-family: var(--font-serif-title); transform: rotate(4deg); }
+.letter-t  { background: #FFFFFF; color: #8C2A3E; border: 1px solid #F4ACB7; transform: rotate(-3deg); }
+.letter-h2 { background: #D8C3A5; color: #3A3532; font-family: var(--font-handwriting); font-size: 1.8rem; transform: rotate(2deg); }
+.letter-d  { background: #3A3532; color: #FFFFFF; font-family: var(--font-serif-title); transform: rotate(-4deg); }
+.letter-a2 { background: #F4ACB7; color: #FFFFFF; transform: rotate(3deg); }
+.letter-y2 { background: #FFD166; color: #5C3806; font-family: var(--font-serif-title); transform: rotate(-2deg); }
+
+.title-serif-phrase {
+  font-family: var(--font-serif-title);
+  font-size: 2.1rem;
+  font-weight: 800;
+  font-style: italic;
+  color: var(--charcoal-ink);
+  letter-spacing: 0.5px;
+  margin-left: 4px;
+  background: linear-gradient(135deg, #3A3532 0%, #6E453B 60%, #9C6D1D 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.diary-intro-note {
+  font-family: var(--font-serif-body);
+  font-size: 1.1rem;
+  color: var(--charcoal-muted);
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* ========================================================
+   STEP 3: INTERACTIVE BIRTHDAY CAKE SECTION (#birthday-cake-section)
+   2-Tier Pastel Cake with 3 Blowable Candles, Smoke, and Wish
+   ======================================================== */
+.birthday-cake-section {
+  position: relative;
+  background: 
+    radial-gradient(ellipse at 50% 65%, rgba(255, 235, 238, 0.65) 0%, rgba(255, 253, 247, 0) 65%),
+    linear-gradient(180deg, #FFFDFB 0%, #FAF6EE 100%);
+  border: 1px solid rgba(216, 195, 165, 0.8);
+  border-radius: 6px;
+  padding: 32px 24px 36px;
+  margin-bottom: 45px;
+  text-align: center;
+  box-shadow: 
+    0 12px 32px rgba(58, 53, 50, 0.08),
+    0 2px 6px rgba(0, 0, 0, 0.04);
+}
+
+/* Handwritten Wish Invitation Prompt */
+.cake-prompt-card {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 209, 102, 0.2);
+  border: 1.5px solid rgba(255, 209, 102, 0.65);
+  padding: 8px 22px;
+  border-radius: 30px;
+  margin-bottom: 24px;
+}
+
+.cake-prompt-text {
+  font-family: var(--font-handwriting);
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #7A4E0B;
+  letter-spacing: 0.3px;
+  line-height: 1.25;
+}
+
+.cake-sparkle-icon {
+  font-size: 1.2rem;
+  color: #D49B2A;
+  animation: sparkleRotate 3s infinite ease-in-out alternate;
+}
+
+@keyframes sparkleRotate {
+  0% { transform: scale(0.9) rotate(0deg); opacity: 0.7; }
+  100% { transform: scale(1.2) rotate(25deg); opacity: 1; }
+}
+
+/* Cake Stage & Alignment */
+.cake-display-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 0 20px;
+}
+
+.interactive-cake {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* 3 Lit Birthday Candles */
+.candles-rack {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 32px;
+  margin-bottom: -4px;
+  z-index: 10;
+  position: relative;
+}
+
+.candle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  user-select: none;
+  outline: none;
+}
+
+.candle:hover {
+  transform: translateY(-3px) scale(1.05);
+}
+
+.candle-1 { height: 75px; }
+.candle-2 { height: 86px; }
+.candle-3 { height: 75px; }
+
+/* Candle Flame & Pulsing Glow */
+.flame-wrapper {
+  position: relative;
+  width: 18px;
+  height: 28px;
+  margin-bottom: 2px;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  transform-origin: center bottom;
+}
+
+.flame-glow {
+  position: absolute;
+  inset: -10px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 209, 102, 0.7) 0%, transparent 70%);
+  filter: blur(4px);
+  pointer-events: none;
+  animation: glowPulse 2s ease-in-out infinite alternate;
+}
+
+.flame-outer {
+  position: absolute;
+  inset: 0;
+  border-radius: 50% 50% 35% 35% / 60% 60% 40% 40%;
+  background: linear-gradient(180deg, #FFF9D2 0%, #FFB703 50%, #FB8500 100%);
+  box-shadow: 
+    0 0 10px #FFB703,
+    0 0 20px rgba(255, 183, 3, 0.6);
+  animation: flameFlicker 1.8s ease-in-out infinite alternate;
+  transform-origin: center bottom;
+}
+
+.flame-core {
+  position: absolute;
+  bottom: 2px;
+  left: 5px;
+  right: 5px;
+  height: 14px;
+  border-radius: 50% 50% 40% 40%;
+  background: #FFFFFF;
+  box-shadow: 0 0 6px #FFFFFF;
+}
+
+@keyframes flameFlicker {
+  0% { transform: scale(1) rotate(-1deg); }
+  25% { transform: scale(1.06, 0.94) rotate(2deg); }
+  50% { transform: scale(0.95, 1.05) rotate(-2deg); }
+  75% { transform: scale(1.04, 0.98) rotate(1deg); }
+  100% { transform: scale(1.01, 1.02) rotate(0deg); }
+}
+
+@keyframes glowPulse {
+  0% { opacity: 0.6; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1.15); }
+}
+
+/* Extinguished Flame State */
+.flame-wrapper.is-extinguished {
+  opacity: 0;
+  transform: scale(0);
+  pointer-events: none;
+}
+
+/* Candle Wick */
+.candle-wick {
+  width: 2px;
+  height: 7px;
+  background: #3A3532;
+  margin-bottom: -1px;
+}
+
+/* Candle Body */
+.candle-body {
+  width: 14px;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 
+    inset 0 1px 2px rgba(255, 255, 255, 0.8),
+    0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.candle-1 .candle-body {
+  height: 40px;
+  background: repeating-linear-gradient(45deg, #FBE4E8 0px, #FBE4E8 6px, #F4ACB7 6px, #F4ACB7 12px);
+}
+
+.candle-2 .candle-body {
+  height: 50px;
+  background: repeating-linear-gradient(45deg, #FFF8DB 0px, #FFF8DB 6px, #FFD166 6px, #FFD166 12px);
+}
+
+.candle-3 .candle-body {
+  height: 40px;
+  background: repeating-linear-gradient(45deg, #FBE4E8 0px, #FBE4E8 6px, #F4ACB7 6px, #F4ACB7 12px);
+}
+
+/* Animated Smoke Wisps */
+.smoke-container {
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  height: 90px;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 15;
+}
+
+.smoke-wisp {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(160, 155, 150, 0.75) 0%, rgba(200, 195, 190, 0) 70%);
+  filter: blur(3px);
+  animation: smokeRise 1.4s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes smokeRise {
+  0% {
+    opacity: 0.85;
+    transform: translate(0, 0) scale(0.6);
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--smoke-drift-x, 15px), -65px) scale(2.8);
+  }
+}
+
+/* 2-Tier Pastel Birthday Cake Structure */
+.cake-structure {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease;
+}
+
+.cake-structure:hover {
+  transform: scale(1.02);
+}
+
+/* Top Tier (Tier 2) */
+.cake-tier.tier-top {
+  position: relative;
+  width: 160px;
+  height: 64px;
+  background: linear-gradient(180deg, #FFF0F3 0%, #F8C8D2 70%, #F4ACB7 100%);
+  border-radius: 12px 12px 6px 6px;
+  border: 2px solid #E893A0;
+  box-shadow: 
+    inset 0 3px 6px rgba(255, 255, 255, 0.9),
+    0 6px 14px rgba(58, 53, 50, 0.12);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 5;
+}
+
+/* Frosting Drippings */
+.frosting-drippings {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+}
+
+.drip {
+  width: 18px;
+  height: 12px;
+  background: #FFF5F7;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 2px 3px rgba(232, 147, 160, 0.3);
+}
+
+.tier-frosting-rosettes {
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.15rem;
+  padding-bottom: 4px;
+}
+
+/* Cream Ribbon Divider */
+.cake-cream-ribbon {
+  width: 180px;
+  height: 10px;
+  background: #FFFFFF;
+  border-radius: 8px;
+  border: 1px solid rgba(232, 147, 160, 0.4);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  margin: -4px 0;
+  z-index: 6;
+}
+
+/* Bottom Tier (Tier 1 - Wider) */
+.cake-tier.tier-bottom {
+  position: relative;
+  width: 230px;
+  height: 80px;
+  background: linear-gradient(180deg, #FFFBF5 0%, #FBECE2 60%, #F5DAC9 100%);
+  border-radius: 14px 14px 8px 8px;
+  border: 2px solid var(--kraft-brown);
+  box-shadow: 
+    inset 0 3px 6px rgba(255, 255, 255, 0.9),
+    0 10px 24px rgba(58, 53, 50, 0.16);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  z-index: 4;
+}
+
+.frosting-pearls {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 4px;
+}
+
+.pearl {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 1px solid rgba(244, 172, 183, 0.6);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.tier-strawberry-hearts {
+  display: flex;
+  justify-content: space-around;
+  font-size: 1.25rem;
+  color: var(--blush-pink-dark);
+  padding-bottom: 6px;
+}
+
+/* Vintage Pedestal Cake Stand */
+.cake-stand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -3px;
+  z-index: 2;
+}
+
+.stand-plate {
+  width: 270px;
+  height: 14px;
+  background: linear-gradient(180deg, #FFFDF8 0%, #E8DCBE 100%);
+  border: 2px solid #C8B896;
+  border-radius: 12px;
+  box-shadow: 
+    0 6px 16px rgba(58, 53, 50, 0.2),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
+}
+
+.stand-pillar {
+  width: 32px;
+  height: 26px;
+  background: linear-gradient(90deg, #E8DCBE 0%, #FFFDF8 50%, #C8B896 100%);
+  border-left: 1.5px solid #C8B896;
+  border-right: 1.5px solid #C8B896;
+}
+
+.stand-base {
+  width: 140px;
+  height: 16px;
+  background: linear-gradient(180deg, #FFFDF8 0%, #E8DCBE 100%);
+  border: 2px solid #C8B896;
+  border-radius: 10px 10px 4px 4px;
+  box-shadow: 0 6px 18px rgba(58, 53, 50, 0.25);
+}
+
+/* Glowing Handwritten Celebration Card (#wish-result-card) */
+.wish-result-card {
+  position: relative;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(20px);
+  overflow: hidden;
+  pointer-events: none;
+  transition: max-height 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wish-result-card.is-visible {
+  max-height: 280px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  margin-top: 25px;
+}
+
+.result-card-inner {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FFFDF6 50%, #FFF4CC 100%);
+  border: 2px solid var(--fairy-gold);
+  border-radius: 18px;
+  padding: 22px 24px;
+  box-shadow: 
+    0 12px 35px rgba(255, 209, 102, 0.35),
+    0 4px 12px rgba(58, 53, 50, 0.08);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.result-confetti-sparkle {
+  font-size: 1.4rem;
+  letter-spacing: 6px;
+  margin-bottom: 8px;
+}
+
+.wish-locked-text {
+  font-family: var(--font-script);
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #7A4E0B;
+  line-height: 1.35;
+  margin-bottom: 14px;
+}
+
+.relight-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1.5px solid var(--fairy-gold-dark);
+  border-radius: 25px;
+  padding: 8px 20px;
+  font-family: var(--font-handwriting);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #6B4208;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(255, 209, 102, 0.3);
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.relight-btn:hover {
+  background: #FFFDF0;
+  border-color: var(--blush-pink-dark);
+  color: #8C2A3E;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 14px rgba(244, 172, 183, 0.4);
+}
+
+.relight-btn:active {
+  transform: translateY(1px);
+}
+
+
+/* Scrapbook Footer */
+.scrapbook-footer {
+  text-align: center;
+  padding: 20px 0;
+}
+
+.footer-handwritten {
+  font-family: var(--font-script);
+  font-size: 1.6rem;
+  color: var(--blush-pink-dark);
+}
+
+/* ========================================================
+   STEP 4: THE POLAROID WALL & SCATTER TABLE GALLERY
+   ======================================================== */
+.polaroid-gallery-section {
+  position: relative;
+  margin-bottom: 55px;
+}
+
+/* Gallery Section Header */
+.gallery-section-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.gallery-washi-tape {
+  display: inline-block;
+  width: 130px;
+  height: 24px;
+  background: rgba(244, 172, 183, 0.7);
+  border-left: 2px dashed rgba(255, 255, 255, 0.6);
+  border-right: 2px dashed rgba(255, 255, 255, 0.6);
+  transform: rotate(-1.5deg);
+  margin-bottom: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.gallery-title {
+  font-family: var(--font-serif-title);
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--charcoal-ink);
+  margin-bottom: 6px;
+}
+
+.gallery-subtitle {
+  font-family: var(--font-serif-body);
+  font-size: 1.05rem;
+  color: var(--charcoal-muted);
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+/* ========================================================
+   PART A: HANGING STRING GALLERY (#string-gallery)
+   ======================================================== */
+.string-gallery {
+  position: relative;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 16px;
+  padding: 20px 10px 30px;
+  margin-bottom: 35px;
+}
+
+.twine-row {
+  position: relative;
+  padding: 34px 10px 24px;
+  margin-bottom: 30px;
+}
+
+.twine-string-line {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(45deg, #5C4033 0px, #5C4033 4px, #8B654E 4px, #8B654E 8px);
+  border-radius: 2px;
+  box-shadow: 0 4px 8px rgba(40, 25, 15, 0.35);
+  z-index: 1;
+}
+
+.polaroid-string-items {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 24px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Wooden Clothespin at Top of Hanging Polaroids */
+.wooden-clothespin {
+  position: absolute;
+  top: -18px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 32px;
+  display: flex;
+  justify-content: space-between;
+  z-index: 10;
+  filter: drop-shadow(0 2px 4px rgba(40, 20, 10, 0.35));
+  pointer-events: none;
+}
+
+.clothespin-wood {
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(90deg, #C69255 0%, #E2B982 50%, #B57F43 100%);
+  border-radius: 2px;
+}
+
+.clothespin-spring {
+  position: absolute;
+  top: 11px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 6px;
+  background: #7D8597;
+  border-radius: 2px;
+  border: 1px solid #4A5060;
+}
+
+/* Classic Polaroid Frame */
+.polaroid-card {
+  position: relative;
+  width: 235px;
+  background: #FFFDFB;
+  padding: 12px 12px 18px;
+  border-radius: 4px;
+  box-shadow: 
+    0 12px 28px rgba(45, 30, 20, 0.18), 
+    0 2px 6px rgba(0, 0, 0, 0.08);
+  transform: rotate(var(--tilt-angle, 0deg));
+  transform-origin: top center;
+  transition: box-shadow 0.3s ease;
+  user-select: none;
+}
+
+.polaroid-card.hanging {
+  cursor: pointer;
+}
+
+.polaroid-card.hanging:hover {
+  animation: pendulumSwing 2.6s ease-in-out infinite alternate;
+  box-shadow: 0 18px 36px rgba(58, 53, 50, 0.24);
+}
+
+@keyframes pendulumSwing {
+  0%   { transform: rotate(calc(var(--tilt-angle, 0deg) - 3.5deg)); }
+  50%  { transform: rotate(calc(var(--tilt-angle, 0deg) + 3.8deg)); }
+  100% { transform: rotate(calc(var(--tilt-angle, 0deg) - 3.5deg)); }
+}
+
+/* Polaroid Photo Frame Area */
+.polaroid-photo-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #FDFBF7;
+  border: 1px solid rgba(216, 195, 165, 0.5);
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.polaroid-photo-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 45%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.polaroid-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  display: block;
+}
+
+.polaroid-img.img-hidden {
+  display: none !important;
+}
+
+/* Aesthetic Pastel Scrapbook Placeholder (Camera Doodle) */
+.polaroid-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #FFF5F7 0%, #FAF0EE 50%, #FDF4E8 100%);
+  padding: 14px;
+  text-align: center;
+  gap: 6px;
+}
+
+.polaroid-placeholder.placeholder-hidden {
+  display: none !important;
+}
+
+.camera-doodle {
+  filter: drop-shadow(0 2px 4px rgba(244, 172, 183, 0.4));
+  transition: transform 0.2s ease;
+}
+
+.polaroid-card:hover .camera-doodle {
+  transform: scale(1.1) rotate(-5deg);
+}
+
+.placeholder-label {
+  font-family: var(--font-handwriting);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #8C2A3E;
+  line-height: 1.2;
+}
+
+.placeholder-hint {
+  font-family: var(--font-serif-body);
+  font-size: 0.72rem;
+  color: var(--charcoal-muted);
+}
+
+/* Polaroid Text Footer */
+.polaroid-footer {
+  padding-top: 10px;
+  text-align: center;
+}
+
+.polaroid-caption {
+  font-family: var(--font-handwriting);
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--charcoal-ink);
+  line-height: 1.2;
+  margin-bottom: 0;
+}
+
+
+/* ========================================================
+   PART B: THE INTERACTIVE SCATTER TABLE (#scatter-table)
+   ======================================================== */
+.scatter-table-area {
+  position: relative;
+  background-color: #D2BA9B;
+  background-image: 
+    radial-gradient(rgba(130, 95, 60, 0.45) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(175, 140, 100, 0.3) 1px, transparent 1px);
+  background-size: 14px 14px, 28px 28px;
+  border: 10px solid #C8A986;
+  border-radius: 16px;
+  padding: 22px 20px;
+  box-shadow: 
+    inset 0 0 25px rgba(60, 35, 15, 0.28), 
+    0 16px 36px rgba(45, 30, 20, 0.16);
+  overflow: hidden;
+  text-align: center;
+}
+
+.scatter-table-header {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  max-width: fit-content;
+  margin: 0 auto 16px;
+  background: #FFFDF7;
+  border: 1.5px dashed var(--kraft-brown);
+  border-radius: 8px;
+  padding: 6px 18px;
+  transform: rotate(-1deg);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+}
+
+.scatter-table-title {
+  font-family: var(--font-serif-title);
+  font-size: 1.18rem;
+  font-weight: 700;
+  color: #4A3326;
+}
+
+.scatter-hint-badge {
+  display: none !important;
+}
+
+.scatter-table-surface {
+  position: relative;
+  width: 100%;
+  min-height: 440px;
+  height: 460px;
+  overflow: visible;
+}
+
+/* Draggable Scatter Polaroids */
+.polaroid-scatter {
+  position: absolute;
+  width: 220px;
+  cursor: grab;
+  touch-action: none;
+  transition: box-shadow 0.25s ease, transform 0.15s ease;
+  will-change: transform, left, top;
+}
+
+.polaroid-scatter.is-dragging {
+  cursor: grabbing !important;
+  box-shadow: 0 26px 50px rgba(45, 25, 15, 0.42) !important;
+  transform: scale(1.08) rotate(var(--tilt-angle, 0deg)) !important;
+  z-index: 999 !important;
+}
+
+/* Washi Tape Strip on Corner of Scatter Polaroids */
+.scatter-washi-tape {
+  position: absolute;
+  top: -10px;
+  right: 12px;
+  width: 70px;
+  height: 20px;
+  background: rgba(244, 172, 183, 0.8);
+  border-left: 2px dashed rgba(255, 255, 255, 0.6);
+  border-right: 2px dashed rgba(255, 255, 255, 0.6);
+  transform: rotate(18deg);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.scatter-tape-gold {
+  background: rgba(255, 209, 102, 0.8);
+  transform: rotate(-14deg);
+  left: 12px;
+  right: auto;
+}
+
+/* ========================================================
+   SIMPLE LIGHTBOX MODAL OVERLAY (#simple-lightbox)
+   ======================================================== */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.lightbox-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.lock-screen:not(.is-hidden) ~ #simple-lightbox {
+  display: none !important;
+}
+
+.lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 16, 12, 0.78);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.lightbox-content {
+  position: relative;
+  z-index: 10;
+  max-width: 90vw;
+  max-height: 90vh;
+  transform: scale(0.92);
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightbox-overlay.is-open .lightbox-content {
+  transform: scale(1);
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -16px;
+  right: -16px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  border: 2px solid var(--kraft-brown);
+  color: var(--charcoal-ink);
+  font-size: 1.25rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+  z-index: 20;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.lightbox-close:hover {
+  background: var(--blush-pink);
+  color: #FFFFFF;
+  transform: scale(1.1);
+  border-color: var(--blush-pink-dark);
+}
+
+.lightbox-frame {
+  background: #FFFDFB;
+  padding: 16px 16px 20px;
+  border-radius: 6px;
+  box-shadow: 
+    0 25px 60px rgba(10, 5, 3, 0.6),
+    0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid rgba(216, 195, 165, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: min(520px, 90vw);
+}
+
+.lightbox-frame img {
+  width: 100%;
+  max-height: 68vh;
+  object-fit: contain;
+  border-radius: 4px;
+  background: #F8F4EE;
+  display: block;
+}
+
+.lightbox-caption {
+  font-family: var(--font-handwriting);
+  font-size: clamp(1.3rem, 2.8vw, 1.65rem);
+  font-weight: 700;
+  color: var(--charcoal-ink);
+  text-align: center;
+  margin-top: 14px;
+  line-height: 1.3;
+  padding: 0 8px;
+}
+
+/* ========================================================
+   STEP 6: STICKY NOTES CORNER & COMPLIMENT TICKET DISPENSER
+   ======================================================== */
+.sticky-notes-dispenser-section {
+  position: relative;
+  margin-top: 45px;
+  margin-bottom: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 55px;
+}
+
+/* --------------------------------------------------------
+   PART A: THE STICKY NOTES CORNER
+   -------------------------------------------------------- */
+.sticky-notes-wrapper {
+  position: relative;
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 10px 0 35px;
+  box-shadow: none;
+}
+
+.sticky-notes-header {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+  z-index: 5;
+}
+
+.section-tape-badge {
+  display: inline-block;
+  font-family: var(--font-handwriting);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #7A4E0B;
+  background: rgba(255, 209, 102, 0.45);
+  border: 1px dashed rgba(212, 155, 42, 0.7);
+  padding: 4px 18px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  transform: rotate(-1.5deg);
+}
+
+.sticky-section-title {
+  font-family: var(--font-serif-title);
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--charcoal-ink);
+  letter-spacing: 0.3px;
+  margin-bottom: 6px;
+}
+
+.sticky-section-subtitle {
+  font-family: var(--font-serif-body);
+  font-size: 1.05rem;
+  color: var(--charcoal-muted);
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.sticky-notes-container {
+  position: relative;
+  min-height: 280px;
+}
+
+/* Grid of 3 Pastel Post-It Notes */
+.sticky-notes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 32px 28px;
+  justify-items: center;
+  position: relative;
+  z-index: 3;
+}
+
+/* Base Sticky Note Style with Page Curl Effect */
+.sticky-note {
+  position: relative;
+  width: 100%;
+  max-width: 310px;
+  min-height: 220px;
+  padding: 32px 22px 26px;
+  border-radius: 2px;
+  cursor: pointer;
+  transform: rotate(var(--tilt-angle, 0deg));
+  transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s ease;
+  user-select: none;
+  box-shadow: 0 14px 24px -8px rgba(58, 53, 50, 0.22), 0 2px 4px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+/* Authentic Page Curl Effect (Bottom-Right Corner) */
+.sticky-note::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 0 0 0;
+  border-color: transparent transparent rgba(0, 0, 0, 0.14) transparent;
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+  box-shadow: -4px -4px 10px rgba(0, 0, 0, 0.12);
+  border-radius: 0 0 2px 0;
+  pointer-events: none;
+}
+
+.sticky-note:hover,
+.sticky-note.is-curled {
+  transform: rotate(var(--tilt-angle, 0deg)) translateY(-8px) scale(1.025);
+  box-shadow: 0 24px 34px -8px rgba(58, 53, 50, 0.28), 0 6px 12px rgba(0, 0, 0, 0.08);
+  z-index: 10;
+}
+
+.sticky-note:hover::after,
+.sticky-note.is-curled::after {
+  border-width: 0 0 38px 38px;
+  border-color: transparent transparent rgba(255, 255, 255, 0.88) transparent;
+}
+
+/* Authentic Pastel Variations */
+.note-yellow {
+  background: linear-gradient(175deg, #FFFDEB 0%, #FEF9C3 55%, #FEF08A 100%);
+  border-left: none;
+}
+
+.note-pink {
+  background: linear-gradient(175deg, #FFF5F7 0%, #FDE2E4 55%, #F8B4BE 100%);
+  border-left: none;
+}
+
+.note-mint {
+  background: linear-gradient(175deg, #F5F0FF 0%, #EFE8FA 55%, #E9DCFF 100%);
+  border-left: none;
+}
+
+/* Washi Tape Strips Holding the Sticky Notes */
+.sticky-washi-tape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(var(--tape-tilt, 0deg));
+  width: 85px;
+  height: 22px;
+  border-left: 2px dashed rgba(255, 255, 255, 0.65);
+  border-right: 2px dashed rgba(255, 255, 255, 0.65);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+  z-index: 5;
+}
+
+.tape-pink-washi {
+  background: rgba(244, 172, 183, 0.82);
+}
+
+.tape-gold-washi {
+  background: rgba(255, 209, 102, 0.85);
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 5px, rgba(255, 255, 255, 0.3) 5px, rgba(255, 255, 255, 0.3) 10px);
+}
+
+.tape-mint-washi {
+  background: rgba(216, 180, 254, 0.82);
+  background-image: radial-gradient(rgba(255, 255, 255, 0.45) 1.5px, transparent 1.5px);
+  background-size: 8px 8px;
+}
+
+.sticky-note-text {
+  font-family: var(--font-handwriting);
+  font-size: 1.5rem;
+  line-height: 1.4;
+  color: #3A3532;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.sticky-note-footer {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.sticky-note-stamp {
+  font-size: 1.15rem;
+}
+
+
+/* Pressed Dried Botanical Stickers & Golden Foil Stars */
+.botanical-stickers-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: visible;
+  z-index: 1;
+}
+
+.botanical-flower {
+  position: absolute;
+  filter: drop-shadow(0 3px 6px rgba(58, 53, 50, 0.16));
+  transition: transform 0.3s ease;
+}
+
+.flower-daisy {
+  top: -24px;
+  right: 18px;
+  transform: rotate(18deg);
+}
+
+.flower-lavender {
+  bottom: -20px;
+  left: 10px;
+  transform: rotate(-14deg);
+}
+
+.flower-rosebud {
+  top: 40%;
+  left: -20px;
+  transform: rotate(25deg);
+}
+
+.foil-star {
+  position: absolute;
+  color: var(--fairy-gold);
+  text-shadow: 0 0 10px rgba(255, 209, 102, 0.8);
+  font-size: 1.1rem;
+  animation: starTwinkle 3s ease-in-out infinite alternate;
+}
+
+.star-1 { top: 12px; left: 32px; font-size: 1.35rem; animation-delay: 0.2s; }
+.star-2 { top: 28px; right: 85px; font-size: 1.1rem; animation-delay: 1.2s; }
+.star-3 { bottom: 18px; right: 45px; font-size: 1.4rem; animation-delay: 0.7s; }
+.star-4 { bottom: 35px; left: 80px; font-size: 1.2rem; animation-delay: 1.8s; }
+.star-5 { top: 50%; right: 12px; font-size: 1.05rem; animation-delay: 2.2s; }
+
+@keyframes starTwinkle {
+  0% { transform: scale(0.9) rotate(0deg); opacity: 0.55; }
+  100% { transform: scale(1.25) rotate(15deg); opacity: 1; }
+}
+
+/* --------------------------------------------------------
+   PART B: INTERACTIVE "PULL FOR A COMPLIMENT" TICKET DISPENSER
+   -------------------------------------------------------- */
+.ticket-dispenser-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.dispenser-card {
+  position: relative;
+  width: 100%;
+  max-width: 580px;
+  background: linear-gradient(180deg, #FDFBF7 0%, #F8F1E7 100%);
+  border: 3px solid var(--kraft-brown-dark);
+  border-radius: 26px;
+  box-shadow: 
+    0 18px 45px rgba(58, 53, 50, 0.18),
+    0 4px 12px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+/* Vintage Top Brass Canopy */
+.dispenser-top-canopy {
+  position: relative;
+  background: linear-gradient(135deg, #E6C687 0%, #D4AF37 50%, #B8860B 100%);
+  padding: 12px 18px 10px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+  border-bottom: 2px solid #8C6207;
+}
+
+.brass-arch-trim {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #FFF0B3 0%, #FFD166 50%, #FFF0B3 100%);
+}
+
+.dispenser-plate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #3A231C;
+  border: 1.5px solid #FFD166;
+  border-radius: 20px;
+  padding: 5px 16px;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.dispenser-plate-text {
+  font-family: var(--font-serif-title);
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  color: #FFFDF0;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.brass-screw {
+  color: #FFD166;
+  font-size: 0.9rem;
+}
+
+/* Dispenser Body Content */
+.dispenser-body {
+  padding: 22px 24px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Compact Recessed Vintage Glass Badge */
+.dispenser-window {
+  width: 100%;
+  max-width: 380px;
+  margin: 0 auto;
+  order: 1;
+  background: rgba(254, 250, 242, 0.7);
+  border: 1.5px solid rgba(216, 195, 165, 0.65);
+  border-radius: 12px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: inset 0 2px 6px rgba(58, 53, 50, 0.08);
+}
+
+.ticket-roll-graphic {
+  display: flex;
+  align-items: center;
+}
+
+.ticket-spool {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spool-core {
+  font-size: 1.85rem;
+  line-height: 1;
+}
+
+.spool-ribbon {
+  width: 50px;
+  height: 18px;
+  background: repeating-linear-gradient(90deg, #F4ACB7, #F4ACB7 8px, #FFF 8px, #FFF 10px);
+  border: 1px dashed #D98996;
+  border-radius: 2px;
+}
+
+.dispenser-hint-badge {
+  font-family: var(--font-handwriting);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #6E453B;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.blinking-dot {
+  color: #E63946;
+  animation: dotBlink 1.4s infinite ease-in-out;
+}
+
+@keyframes dotBlink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Push Button Placed Above Mechanical Slot */
+.dispenser-controls {
+  order: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto 4px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+/* Mechanical Slot */
+.dispenser-slot-housing {
+  order: 3;
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dispenser-slit {
+  width: 100%;
+  height: 9px;
+  background: #24140D;
+  border-radius: 5px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.7);
+  border: 1.5px solid #826047;
+}
+
+.dispenser-roller {
+  width: 90%;
+  height: 4px;
+  background: #A67D5B;
+  border-radius: 2px;
+  margin-top: -6px;
+  z-index: 2;
+}
+
+.dispense-ticket-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #F4ACB7 0%, #E893A0 50%, #D07987 100%);
+  border: 2px solid #B55E6E;
+  border-radius: 30px;
+  padding: 12px 28px;
+  color: #FFFFFF;
+  font-family: var(--font-serif-title);
+  font-size: 1.12rem;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  box-shadow: 
+    0 8px 22px rgba(217, 137, 150, 0.45),
+    0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  outline: none;
+}
+
+.dispense-ticket-btn:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 
+    0 12px 28px rgba(217, 137, 150, 0.6),
+    0 4px 8px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #F8B4BE 0%, #F4ACB7 50%, #DE8A98 100%);
+}
+
+.dispense-ticket-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.btn-ticket-icon {
+  font-size: 1.25rem;
+}
+
+.btn-sparkle-shine {
+  font-size: 1.1rem;
+}
+
+
+/* Output Tray & Perforated Ticket Display Connected Direct to Slot */
+.dispenser-output-tray {
+  order: 4;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  min-height: 200px;
+  margin-top: -8px;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ticket-stage {
+  position: relative;
+  width: 100%;
+  max-width: 470px;
+}
+
+/* Vintage Perforated Paper Ticket */
+.vintage-ticket {
+  position: relative;
+  background-color: #FFFDF9;
+  border: 2px dashed #C8B295;
+  border-radius: 12px;
+  padding: 20px 22px 18px;
+  box-shadow: 
+    0 12px 30px rgba(58, 53, 50, 0.15),
+    0 2px 6px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  will-change: transform, opacity;
+}
+
+/* Classic Perforated Semicircle Cutouts on Left & Right */
+.vintage-ticket::before,
+.vintage-ticket::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  background: #F8F1E7;
+  border: 2px dashed #C8B295;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 5;
+}
+
+.vintage-ticket::before {
+  left: -12px;
+}
+
+.vintage-ticket::after {
+  right: -12px;
+}
+
+/* Mechanical Slide-out + Bounce Animation */
+.ticket-slide-anim {
+  animation: ticketSlideBounce 0.65s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes ticketSlideBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-75px) scale(0.9);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(14px) scale(1.03);
+  }
+  85% {
+    transform: translateY(-5px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.ticket-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px dashed rgba(200, 178, 149, 0.8);
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.ticket-serial-badge {
+  font-family: var(--font-serif-title);
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: #9C6B0D;
+  background: rgba(255, 209, 102, 0.3);
+  border: 1px solid rgba(226, 166, 36, 0.6);
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+
+.ticket-top-tag {
+  font-family: var(--font-serif-title);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #B33946;
+}
+
+.ticket-body {
+  padding: 4px 6px 12px;
+  text-align: center;
+}
+
+.ticket-compliment-text {
+  font-family: var(--font-handwriting);
+  font-size: 1.65rem;
+  line-height: 1.35;
+  color: var(--charcoal-ink);
+  font-weight: 700;
+}
+
+.ticket-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1.5px dashed rgba(200, 178, 149, 0.8);
+  padding-top: 10px;
+  margin-top: 4px;
+}
+
+.ticket-barcode {
+  font-family: monospace;
+  font-size: 0.88rem;
+  letter-spacing: 2px;
+  color: var(--charcoal-muted);
+}
+
+.ticket-validity-stamp {
+  font-family: var(--font-script);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #A63041;
+}
+
+/* ========================================================
+   STEP 7: THE WAX-SEALED ENVELOPE & MULTI-PAGE LOVE LETTER
+   ======================================================== */
+.envelope-section {
+  position: relative;
+  margin-top: 55px;
+  margin-bottom: 60px;
+  padding: 60px 24px 70px;
+  border-radius: 28px;
+  background: radial-gradient(circle at 50% 35%, #5E302C 0%, #361917 55%, #1E0D0C 100%);
+  box-shadow: 
+    inset 0 0 70px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 1px rgba(255, 209, 102, 0.25),
+    0 22px 55px rgba(25, 12, 8, 0.45);
+  border: 2px solid rgba(255, 209, 102, 0.35);
+  overflow: hidden;
+  text-align: center;
+}
+
+/* Intimate Candlelight Glow Ambient Flicker */
+.candlelight-vignette {
+  position: absolute;
+  top: 15%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(255, 209, 102, 0.18) 0%, rgba(255, 183, 3, 0.08) 50%, transparent 75%);
+  filter: blur(40px);
+  pointer-events: none;
+  animation: candleGlowBreath 4s ease-in-out infinite alternate;
+}
+
+@keyframes candleGlowBreath {
+  0% { transform: translate(-50%, -50%) scale(0.95); opacity: 0.7; }
+  50% { transform: translate(-50%, -50%) scale(1.06); opacity: 0.95; }
+  100% { transform: translate(-50%, -50%) scale(0.98); opacity: 0.8; }
+}
+
+/* Header & Pulsing Invitation Prompt */
+.envelope-header {
+  position: relative;
+  z-index: 5;
+  margin-bottom: 35px;
+}
+
+.envelope-tape-badge {
+  display: inline-block;
+  font-family: var(--font-handwriting);
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #FFF2C2;
+  background: rgba(198, 146, 20, 0.4);
+  border: 1px dashed rgba(255, 209, 102, 0.75);
+  padding: 4px 20px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.envelope-title {
+  font-family: var(--font-serif-title);
+  font-size: 2.3rem;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #FFFDF7;
+  background: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-fill-color: #FFFDF7;
+  text-shadow: 
+    0 2px 10px rgba(0, 0, 0, 0.65), 
+    0 0 24px rgba(255, 209, 102, 0.35);
+  margin-bottom: 14px;
+}
+
+.envelope-prompt {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 209, 102, 0.16);
+  border: 1.5px solid rgba(255, 209, 102, 0.65);
+  padding: 10px 28px;
+  border-radius: 35px;
+  font-family: var(--font-handwriting);
+  font-size: 1.5rem;
+  color: #FFFDF0;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 0 20px rgba(255, 209, 102, 0.3);
+  animation: promptCandlePulse 2.5s ease-in-out infinite alternate;
+  user-select: none;
+}
+
+@keyframes promptCandlePulse {
+  0% { transform: scale(0.98); box-shadow: 0 0 14px rgba(255, 209, 102, 0.35); }
+  100% { transform: scale(1.03); box-shadow: 0 0 28px rgba(255, 209, 102, 0.75); }
+}
+
+.pulsing-heart-icon {
+  font-size: 1.3rem;
+}
+
+/* 3D Envelope Stage */
+.envelope-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 1200px;
+  margin: 15px auto 30px;
+  z-index: 5;
+}
+
+/* 3D Kraft-Paper Envelope */
+.envelope-3d {
+  position: relative;
+  width: 380px;
+  height: 250px;
+  background: #D8C3A5;
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(0, 0, 0, 0.06) 100%);
+  border-radius: 6px;
+  box-shadow: 
+    0 22px 50px rgba(15, 8, 5, 0.6),
+    0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+}
+
+.envelope-3d:hover {
+  transform: translateY(-4px);
+}
+
+/* Back Plate & Pattern Liner */
+.envelope-back-plate {
+  position: absolute;
+  inset: 0;
+  background: #CDB799;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.envelope-liner-pattern {
+  position: absolute;
+  inset: 0;
+  background-color: #FAF5EE;
+  background-image: 
+    radial-gradient(rgba(244, 172, 183, 0.5) 1.5px, transparent 1.5px),
+    radial-gradient(rgba(255, 209, 102, 0.5) 1.5px, transparent 1.5px);
+  background-size: 18px 18px;
+  background-position: 0 0, 9px 9px;
+  opacity: 0.85;
+}
+
+/* Folded Letter Preview Slip (slides upward on unseal) */
+.envelope-letter-slip {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  right: 20px;
+  height: 215px;
+  background: #FFFDF8;
+  border-radius: 4px;
+  box-shadow: 0 -2px 8px rgba(58, 53, 50, 0.15);
+  border: 1px solid rgba(216, 195, 165, 0.6);
+  z-index: 2;
+  transition: transform 0.85s cubic-bezier(0.34, 1.3, 0.64, 1), opacity 0.4s ease;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.slip-lines {
+  height: 100%;
+  background-image: repeating-linear-gradient(transparent, transparent 18px, rgba(216, 195, 165, 0.45) 18px, rgba(216, 195, 165, 0.45) 19px);
+  border-radius: 2px;
+}
+
+.slip-seal-stamp {
+  font-family: var(--font-handwriting);
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #8C2A3E;
+  text-align: center;
+  background: rgba(244, 172, 183, 0.25);
+  padding: 4px;
+  border-radius: 4px;
+}
+
+/* Front Pocket Triangle Folds */
+.envelope-pocket-front {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.pocket-fold-bottom {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  border-style: solid;
+  border-width: 0 190px 140px 190px;
+  border-color: transparent transparent #D8C3A5 transparent;
+  filter: drop-shadow(0 -4px 6px rgba(40, 25, 18, 0.18));
+}
+
+.pocket-fold-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 0;
+  border-style: solid;
+  border-width: 125px 0 125px 190px;
+  border-color: transparent transparent transparent #E0CDB2;
+  filter: drop-shadow(3px 0 6px rgba(40, 25, 18, 0.14));
+}
+
+.pocket-fold-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  border-style: solid;
+  border-width: 125px 190px 125px 0;
+  border-color: transparent #DFCBaf transparent transparent;
+  filter: drop-shadow(-3px 0 6px rgba(40, 25, 18, 0.14));
+}
+
+/* Top Triangular Flap (3D fold rotation) */
+.envelope-top-flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 145px;
+  background: linear-gradient(180deg, #E2CEB7 0%, #D8C3A5 100%);
+  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  transform-origin: top center;
+  transform: rotateX(0deg);
+  transition: transform 0.85s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 4;
+  filter: drop-shadow(0 6px 10px rgba(35, 20, 12, 0.32));
+}
+
+.flap-crease-shadow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.15);
+}
+
+/* When Envelope is Unsealed & Open */
+.envelope-3d.is-open .envelope-top-flap {
+  transform: rotateX(180deg);
+  z-index: 1;
+}
+
+.envelope-3d.is-open .envelope-letter-slip {
+  transform: translateY(-135px);
+}
+
+/* Crimson-Red 3D Wax Seal Button with Stamped Heart */
+.wax-seal-btn {
+  position: absolute;
+  top: 110px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 62px;
+  height: 62px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  outline: none;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.35s ease;
+}
+
+.wax-seal-btn:hover {
+  transform: translateX(-50%) scale(1.1);
+}
+
+.wax-seal-rim {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 35% 35%, #C22030 0%, #9E1B26 45%, #660E15 100%);
+  border-radius: 48% 52% 49% 51% / 51% 48% 52% 49%;
+  box-shadow: 
+    0 6px 16px rgba(0, 0, 0, 0.6),
+    inset 0 2px 4px rgba(255, 255, 255, 0.35),
+    inset 0 -3px 5px rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wax-seal-core {
+  width: 42px;
+  height: 42px;
+  background: radial-gradient(circle at 40% 40%, #A81B26 0%, #751017 100%);
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wax-heart-stamp {
+  font-size: 1.45rem;
+  color: #FFD166;
+  text-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.7),
+    0 0 6px rgba(255, 209, 102, 0.5);
+}
+
+/* Wax Seal Breaking State */
+.wax-seal-btn.is-broken {
+  transform: translateX(-50%) scale(1.25);
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Full-Size Multi-Page Letter Reader (#letter-reader) */
+.letter-reader-container {
+  position: relative;
+  max-width: 820px;
+  margin: 0 auto;
+  max-height: 0;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  transition: max-height 0.9s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.7s ease, visibility 0.7s ease, margin 0.7s ease;
+  z-index: 8;
+}
+
+.letter-reader-container.is-visible {
+  max-height: 3000px;
+  opacity: 1;
+  visibility: visible;
+  margin-top: 40px;
+}
+
+/* Warm Vintage Ruled Stationery Paper Sheet */
+.stationery-paper-sheet {
+  position: relative;
+  background-color: #FAF6ED;
+  border-radius: 12px;
+  padding: 46px 42px 42px;
+  box-shadow: 
+    0 25px 60px rgba(10, 5, 3, 0.6),
+    0 4px 15px rgba(0, 0, 0, 0.2);
+  border: 1.5px solid rgba(216, 195, 165, 0.85);
+  text-align: left;
+}
+
+/* Pressed Rose Corner Accents */
+.rose-corner {
+  position: absolute;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(45, 25, 15, 0.2));
+  z-index: 2;
+}
+
+.corner-top-left {
+  top: 14px;
+  left: 14px;
+}
+
+.corner-bottom-right {
+  bottom: 14px;
+  right: 14px;
+}
+
+/* Stationery Header */
+.stationery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  border-bottom: 2px dashed rgba(216, 195, 165, 0.85);
+  padding-bottom: 14px;
+  margin-bottom: 24px;
+}
+
+.stationery-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-serif-title);
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: #8C2A3E;
+}
+
+.stationery-heart {
+  font-size: 1.25rem;
+}
+
+.stationery-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-indicator-text {
+  font-family: var(--font-serif-title);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #9C6B0D;
+  background: rgba(255, 209, 102, 0.35);
+  border: 1px solid rgba(226, 166, 36, 0.6);
+  padding: 4px 12px;
+  border-radius: 14px;
+}
+
+.refold-letter-btn {
+  background: transparent;
+  border: 1.5px solid var(--kraft-brown-dark);
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-family: var(--font-serif-title);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #5A392F;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.refold-letter-btn:hover {
+  background: #F4ACB7;
+  border-color: #DE8A98;
+  color: #FFFFFF;
+}
+
+/* High-Contrast Reading Body with Locked Ruled Notebook Lines */
+.stationery-body-area {
+  --line-spacing: 38px;
+  min-height: calc(var(--line-spacing) * 11);
+  padding: 0 8px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent calc(var(--line-spacing) - 1px),
+    rgba(216, 195, 165, 0.55) calc(var(--line-spacing) - 1px),
+    rgba(216, 195, 165, 0.55) var(--line-spacing)
+  );
+  background-position: 0 0;
+}
+
+.stationery-text-content {
+  color: #3A3532;
+  font-family: var(--font-handwriting);
+  font-size: 1.55rem;
+  line-height: var(--line-spacing);
+  font-weight: 600;
+  /* Nudge baseline so handwriting descenders/letters rest right on top of the ruled line */
+  padding-top: 4px;
+}
+
+.stationery-text-content.page-enter-anim {
+  animation: pageFadeSlide 0.4s ease-out forwards;
+}
+
+@keyframes pageFadeSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.stationery-text-content p {
+  line-height: var(--line-spacing);
+  margin-top: 0;
+  margin-bottom: var(--line-spacing); /* Exactly 1 blank ruled line between paragraphs */
+}
+
+.stationery-text-content .letter-greeting,
+.letter-greeting {
+  font-family: var(--font-script);
+  font-size: 1.95rem;
+  font-weight: 700;
+  color: #8C2A3E;
+  line-height: var(--line-spacing);
+  margin-top: 0;
+  margin-bottom: var(--line-spacing);
+}
+
+.stationery-text-content .letter-final-birthday-wish,
+.letter-final-birthday-wish {
+  font-family: var(--font-handwriting);
+  font-size: 1.45rem;
+  line-height: var(--line-spacing);
+  margin-top: 0;
+  margin-bottom: var(--line-spacing);
+  word-break: break-word;
+  color: #8C2A3E;
+  font-weight: 700;
+}
+
+/* Signature Block on Final Page Only - Synchronized to Baseline Rhythm */
+.letter-signature-block {
+  text-align: right;
+  margin-top: var(--line-spacing);
+  padding-top: 0;
+  border-top: none;
+}
+
+.signature-date {
+  font-family: var(--font-serif-body);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--charcoal-muted);
+  line-height: var(--line-spacing);
+  margin-bottom: 0;
+}
+
+.signature-name {
+  font-family: var(--font-script);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: #A63041;
+  line-height: var(--line-spacing);
+  margin-bottom: 0;
+}
+
+/* Interactive Bottom Navigation Bar */
+.stationery-footer-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 2px dashed rgba(216, 195, 165, 0.85);
+  padding-top: 18px;
+  margin-top: 20px;
+}
+
+.nav-page-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #FFFDF8 0%, #FBEBE0 100%);
+  border: 2px solid var(--kraft-brown-dark);
+  border-radius: 25px;
+  padding: 9px 20px;
+  font-family: var(--font-serif-title);
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #4A3326;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(58, 53, 50, 0.12);
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  outline: none;
+}
+
+.nav-page-btn:hover:not(:disabled) {
+  background: #FFFFFF;
+  border-color: var(--blush-pink-dark);
+  color: #8C2A3E;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(244, 172, 183, 0.4);
+}
+
+.nav-page-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.nav-page-btn.is-hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.letter-page-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(216, 195, 165, 0.7);
+  transition: all 0.25s ease;
+}
+
+.page-dot.active {
+  background: #A63041;
+  transform: scale(1.3);
+  box-shadow: 0 0 6px rgba(166, 48, 65, 0.45);
+}
+
+@media (max-width: 768px) {
+  .scrapbook-main {
+    margin: 0 auto;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+    padding: 24px 14px 60px;
+  }
+}
+
+@media (max-width: 540px) {
+  .lock-card {
+    padding: 22px 16px 18px;
+    border-radius: 16px;
+  }
+
+  .embossed-title {
+    font-size: 1.2rem;
+  }
+
+  .sparkle-badge {
+    font-size: 1rem;
+  }
+
+  .vintage-padlock {
+    width: 60px;
+    height: 72px;
+  }
+
+  .pin-box {
+    width: 38px;
+    height: 46px;
+  }
+
+  .pin-heart {
+    font-size: 1.2rem;
+  }
+
+  .keypad-grid {
+    gap: 8px;
+    max-width: 260px;
+  }
+
+  .key-btn {
+    font-size: 1.15rem;
+    padding: 9px 0;
+  }
+
+  .lock-hint {
+    font-size: 1.1rem;
+  }
+
+
+  .ribbon-horizontal {
+    height: 42px;
+    margin-top: -21px;
+  }
+
+  .ribbon-vertical {
+    width: 42px;
+    margin-left: -21px;
+  }
+
+  .polaroid-3d-stage {
+    width: 295px;
+    height: 410px;
+  }
+
+  .front-caption {
+    font-size: 1.35rem;
+  }
+
+  .sticky-section-title {
+    font-size: 1.6rem;
+  }
+
+  .sticky-notes-wrapper {
+    padding: 10px 0 24px;
+  }
+
+  .sticky-note {
+    max-width: 100%;
+    min-height: 200px;
+  }
+
+  .sticky-note-text {
+    font-size: 1.35rem;
+  }
+
+  .dispenser-plate-text {
+    font-size: 0.85rem;
+    letter-spacing: 0.2px;
+  }
+
+  .dispense-ticket-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .dispenser-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+
+  .ticket-compliment-text {
+    font-size: 1.35rem;
+  }
+
+  .envelope-section {
+    padding: 45px 14px 50px;
+  }
+
+  .envelope-title {
+    font-size: 1.8rem;
+    color: #FFFDF7;
+    -webkit-text-fill-color: #FFFDF7;
+  }
+
+  .envelope-prompt {
+    font-size: 1.25rem;
+    padding: 8px 18px;
+  }
+
+  .envelope-3d {
+    width: 310px;
+    height: 210px;
+  }
+
+  .pocket-fold-bottom {
+    border-width: 0 155px 115px 155px;
+  }
+
+  .pocket-fold-left {
+    border-width: 105px 0 105px 155px;
+  }
+
+  .pocket-fold-right {
+    border-width: 105px 155px 105px 0;
+  }
+
+  .envelope-top-flap {
+    height: 120px;
+  }
+
+  .wax-seal-btn {
+    top: 90px;
+    width: 54px;
+    height: 54px;
+  }
+
+  .stationery-paper-sheet {
+    padding: 30px 18px 24px;
+  }
+
+  .stationery-body-area {
+    --line-spacing: 34px;
+  }
+
+  .stationery-text-content {
+    font-size: 1.35rem;
+    padding-top: 3px;
+  }
+
+  .stationery-text-content .letter-greeting {
+    font-size: 1.7rem;
+  }
+
+  .stationery-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .stationery-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .stationery-footer-nav {
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+  }
+
+  .nav-page-btn {
+    padding: 8px 16px;
+    font-size: 0.88rem;
+  }
+
+  .claim-hug-btn {
+    padding: 13px 22px;
+    font-size: 1rem;
+    gap: 8px;
+    width: 100%;
+    max-width: 320px;
+  }
+
+  .hug-modal-card {
+    padding: 34px 18px 24px;
+  }
+
+  .hug-modal-heading {
+    font-size: 2.1rem;
+  }
+
+  .hug-modal-message {
+    font-size: 1.05rem;
+  }
+
+  .whatsapp-direct-btn {
+    font-size: 1rem;
+    padding: 13px 18px;
+  }
+}
+
+/* ==============================================================================
+   STEP 8: THE FINALE & INSTANT WHATSAPP NOTIFICATION
+   ============================================================================== */
+
+/* "Received with Love / Claim Your Hug" Button (#claim-hug-btn) */
+
+
+.letter-page-hug-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 28px;
+  padding-top: 14px;
+}
+
+.claim-hug-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 16px 36px;
+  background: linear-gradient(135deg, #F4ACB7 0%, #FFB5A7 40%, #FFD166 100%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  border-radius: 50px;
+  font-family: var(--font-serif-title);
+  font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+  font-weight: 800;
+  color: #4A1A24;
+  cursor: pointer;
+  box-shadow: 
+    0 8px 24px rgba(244, 172, 183, 0.55),
+    0 0 20px rgba(255, 209, 102, 0.45),
+    inset 0 2px 4px rgba(255, 255, 255, 0.8);
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  animation: hugBtnGlow 2.8s infinite alternate ease-in-out;
+  text-decoration: none;
+  outline: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.claim-hug-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  background: linear-gradient(135deg, #F6B8C1 0%, #FFC1B5 40%, #FFE082 100%);
+  box-shadow: 
+    0 12px 32px rgba(244, 172, 183, 0.7),
+    0 0 32px rgba(255, 209, 102, 0.6),
+    inset 0 2px 6px rgba(255, 255, 255, 0.9);
+  color: #380F18;
+}
+
+.claim-hug-btn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 
+    0 4px 14px rgba(244, 172, 183, 0.5),
+    0 0 12px rgba(255, 209, 102, 0.35);
+}
+
+@keyframes hugBtnGlow {
+  0% {
+    box-shadow: 
+      0 6px 20px rgba(244, 172, 183, 0.45),
+      0 0 15px rgba(255, 209, 102, 0.35),
+      inset 0 2px 4px rgba(255, 255, 255, 0.7);
+  }
+  100% {
+    box-shadow: 
+      0 10px 30px rgba(244, 172, 183, 0.7),
+      0 0 28px rgba(255, 209, 102, 0.6),
+      inset 0 2px 5px rgba(255, 255, 255, 0.9);
+  }
+}
+
+.btn-sparkle-icon {
+  font-size: 1.25rem;
+  display: inline-block;
+  animation: sparkleBounce 1.8s infinite ease-in-out;
+}
+
+.btn-sparkle-icon.sparkle-right {
+  animation-delay: 0.9s;
+}
+
+@keyframes sparkleBounce {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-3px) scale(1.18);
+  }
+}
+
+/* ==============================================================================
+   STEP 8: CELEBRATION POP-UP CARD MODAL (#hug-modal)
+   ============================================================================== */
+.hug-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.hug-modal-overlay.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.hug-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(42, 28, 25, 0.82);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.hug-modal-card {
+  position: relative;
+  max-width: 500px;
+  width: 100%;
+  background: linear-gradient(135deg, #FFFDF9 0%, #FFF5F7 50%, #FFF9EE 100%);
+  border: 3px solid var(--fairy-gold);
+  border-radius: 26px;
+  box-shadow: 
+    0 24px 70px rgba(0, 0, 0, 0.4),
+    0 0 50px rgba(255, 209, 102, 0.35);
+  padding: 42px 32px 30px;
+  text-align: center;
+  transform: scale(0.85) translateY(24px);
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+  z-index: 2;
+}
+
+.hug-modal-overlay.is-visible .hug-modal-card {
+  transform: scale(1) translateY(0);
+}
+
+/* Decorative Washi Tape on Modal Header */
+.modal-washi-tape {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  width: 130px;
+  height: 28px;
+  background: rgba(244, 172, 183, 0.85);
+  border: 1px dashed rgba(255, 255, 255, 0.8);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* Floating Sparkles in Modal */
+.hug-modal-sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sparkle-float {
+  position: absolute;
+  font-size: 1.3rem;
+  opacity: 0.85;
+  animation: modalSparkleFloat 3s infinite ease-in-out;
+}
+
+.sp-1 { top: 18px; left: 24px; animation-delay: 0s; }
+.sp-2 { top: 22px; right: 26px; animation-delay: 0.7s; }
+.sp-3 { bottom: 24px; left: 26px; animation-delay: 1.4s; }
+.sp-4 { bottom: 20px; right: 28px; animation-delay: 2.1s; }
+
+@keyframes modalSparkleFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) scale(1.2) rotate(10deg);
+  }
+}
+
+/* Header & Heart Badge */
+.hug-modal-header {
+  position: relative;
+  z-index: 2;
+  margin-bottom: 12px;
+}
+
+.hug-heart-badge {
+  width: 78px;
+  height: 78px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFF0F3 0%, #FEE1E8 100%);
+  border: 2.5px solid #F4ACB7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.3rem;
+  margin: 0 auto 16px;
+  box-shadow: 
+    0 8px 22px rgba(244, 172, 183, 0.5),
+    0 0 16px rgba(255, 209, 102, 0.4);
+  animation: heartBadgePulse 1.9s infinite ease-in-out;
+}
+
+@keyframes heartBadgePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.hug-modal-heading {
+  font-family: var(--font-script);
+  font-size: clamp(2.2rem, 5vw, 2.75rem);
+  font-weight: 700;
+  color: #8C2A3E;
+  margin: 0 0 12px;
+  line-height: 1.15;
+}
+
+/* Message Text */
+.hug-modal-body {
+  position: relative;
+  z-index: 2;
+}
+
+.hug-modal-message {
+  font-family: var(--font-serif-body);
+  font-size: clamp(1.05rem, 2.5vw, 1.2rem);
+  line-height: 1.7;
+  color: #4A3A35;
+  margin: 0 0 22px;
+  font-weight: 500;
+}
+
+/* Status / Countdown Box */
+.hug-status-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 209, 102, 0.22);
+  border: 1.5px dashed #FFD166;
+  border-radius: 14px;
+  padding: 10px 20px;
+  margin-bottom: 22px;
+  font-family: var(--font-serif-title);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #6E4515;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition: all 0.3s ease;
+}
+
+.hug-status-box.is-success {
+  background: rgba(37, 211, 102, 0.16);
+  border-color: #25D366;
+  color: #0F5C2B;
+}
+
+.hug-status-pulse {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #FFD166;
+  box-shadow: 0 0 6px #FFD166;
+  animation: statusPulseAnim 1s infinite alternate ease-in-out;
+}
+
+.hug-status-box.is-success .hug-status-pulse {
+  background: #25D366;
+  box-shadow: 0 0 6px #25D366;
+  animation: none;
+}
+
+@keyframes statusPulseAnim {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+.hug-status-text {
+  letter-spacing: 0.2px;
+}
+
+/* Prominent WhatsApp Direct Button */
+.hug-modal-actions {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.whatsapp-direct-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 380px;
+  padding: 15px 26px;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: #FFFFFF !important;
+  font-family: var(--font-serif-title);
+  font-size: 1.12rem;
+  font-weight: 800;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.42);
+  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  outline: none;
+}
+
+.whatsapp-direct-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  background: linear-gradient(135deg, #2AE670 0%, #17A090 100%);
+  box-shadow: 0 10px 28px rgba(37, 211, 102, 0.55);
+  color: #FFFFFF !important;
+}
+
+.whatsapp-direct-btn:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.wa-btn-icon {
+  font-size: 1.35rem;
+}
+
+/* Modal Footer & Close Button */
+.hug-modal-footer {
+  margin-top: 18px;
+}
+
+.hug-modal-close-btn {
+  background: transparent;
+  border: none;
+  font-family: var(--font-handwriting);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #8C6A60;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 6px 14px;
+  transition: color 0.2s ease;
+  outline: none;
+}
+
+.hug-modal-close-btn:hover {
+  color: #A63041;
+}
+
+/* Floating Red/Pink Hearts Particle Effect */
+.floating-heart-particle {
+  position: fixed;
+  bottom: -40px;
+  pointer-events: none;
+  z-index: 100000;
+  user-select: none;
+  animation: floatHeartUpward linear forwards;
+}
+
+@keyframes floatHeartUpward {
+  0% {
+    transform: translateY(0) scale(0.6) rotate(0deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(-50vh) scale(1.1) rotate(15deg);
+    opacity: 0.95;
+  }
+  100% {
+    transform: translateY(-110vh) scale(0.9) rotate(-15deg);
+    opacity: 0;
+  }
+}
+
+
